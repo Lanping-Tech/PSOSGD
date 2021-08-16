@@ -8,11 +8,10 @@ import torch
 class PSOSGD_Trainer:
 
     def __init__(self, 
-                 model_name='Linear',
+                 model_lib='models.Linear',
                  device = "cuda" if torch.cuda.is_available() else "cpu",
                  number_particle=150):
-        self.model_name = model_name
-        model_lib = importlib.import_module('models.' + model_name)
+        model_lib = importlib.import_module(model_lib)
         self.device = device
         self.number_particle = number_particle
         self.models= [model_lib.Model().double().to(device) for _ in range(number_particle)]
