@@ -71,6 +71,7 @@ class PSOSGD_Trainer:
                     self.optimizers[i].step(local_best_param_groups[i][1], global_best_param_group[1])
 
                 fitness.append(min(temp_fitness))
+
         return fitness
 
 
