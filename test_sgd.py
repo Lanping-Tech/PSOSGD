@@ -13,8 +13,8 @@ from models.Linear import Model
 import importlib
 import numpy
 
-batch_size = 221
-epochs = 2
+batch_size = 8
+epochs = 5
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
 # Create data loaders.
@@ -69,7 +69,12 @@ def sgd_train(dataloader, number_particle=number_particle, epochs=epochs, device
             print(loss.item())
     return fitness
 
-from psosgd_trainer import PSOSGD_Trainer
+from psosgd_trainer import PSOSGD_Trainer, PSOSGD_Trainer_Config
+from models.Linear import Config as mg
+from psosgd_optimizer import Config
 loss_fn = nn.MSELoss()
-trainer = PSOSGD_Trainer()
+model_config = mg()
+optimizer_config = Config()
+trainer_config = PSOSGD_Trainer_Config(model_config, optimizer_config)
+trainer = PSOSGD_Trainer(trainer_config)
 trainer.train(train_dataloader, loss_fn, epochs)
