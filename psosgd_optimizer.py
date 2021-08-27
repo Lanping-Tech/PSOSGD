@@ -6,18 +6,29 @@ import random
 class Config:
 
     """优化器配置参数"""
-    def __init__(self):
-        self.lr = 1e-1
-        self.momentum = 0.5
-        self.dampening = 0.5
-        self.weight_decay = 0
-        self.nesterov = False
-        self.vlimit_max = 0.5
-        self.vlimit_min = -0.5
-        self.xlimit_max = 10
-        self.xlimit_min = -10
-        self.weight_particle_optmized_location = 0.33
-        self.weight_global_optmized_location = 0.33
+    def __init__(self,
+                 lr = 1e-1, 
+                 momentum = 0.5,
+                 dampening=0.5,
+                 weight_decay = 0,
+                 nesterov = False,
+                 vlimit_max = 0.5,
+                 vlimit_min = -0.5,
+                 xlimit_max = 10,
+                 xlimit_min = -10,
+                 weight_particle_optmized_location = 0.33,
+                 weight_global_optmized_location = 0.33, **kwargs):
+        self.lr = lr
+        self.momentum = momentum
+        self.dampening = dampening
+        self.weight_decay = weight_decay
+        self.nesterov = nesterov
+        self.vlimit_max = vlimit_max
+        self.vlimit_min = vlimit_min
+        self.xlimit_max = xlimit_max
+        self.xlimit_min = xlimit_min
+        self.weight_particle_optmized_location = weight_particle_optmized_location
+        self.weight_global_optmized_location = weight_global_optmized_location
 
 class PSOSGD(Optimizer):
 
