@@ -19,7 +19,7 @@ class PSOSGD_Trainer_Config:
                  optimizer_config,
                  device = "cuda" if torch.cuda.is_available() else "cpu",
                  n_particle = 5,
-                 output_path = 'output'):
+                 output_path = 'output', **kwargs):
 
         # 预留模型参数
         self.model_config = model_config
@@ -56,6 +56,7 @@ class PSOSGD_Trainer:
 
         for t in range(epochs):
             # 切换训练状态
+
             for model in self.models:
                 model.train()
 

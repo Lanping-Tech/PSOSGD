@@ -18,11 +18,14 @@ class Config:
     'mobilenet_v2', 'mobilenet_v3', 'mnasnet0_5', 'mnasnet0_75', 'mnasnet1_0', 'mnasnet1_3',
     'shufflenet_v2_x0_5', 'shufflenet_v2_x1_0', 'shufflenet_v2_x1_5', 'shufflenet_v2_x2_0'
     """
-    def __init__(self):
+    def __init__(self, 
+                 model_name = 'resnet18',
+                 model_pretrained = False,
+                 n_classes = 10, **kwargs):
         self.model_lib = 'models.VisionModels'
-        self.model_name = 'resnet18' 
-        self.pretrained = False
-        self.n_classes = 10
+        self.model_name = model_name
+        self.pretrained = model_pretrained
+        self.n_classes = n_classes
 
 
 class Model(nn.Module):
