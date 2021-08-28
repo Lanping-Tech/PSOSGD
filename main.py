@@ -5,7 +5,7 @@ import torch
 from psosgd_dataset import load_CIFAR10
 from psosgd_trainer import PSOSGD_Trainer
 from psosgd_trainer import PSOSGD_Trainer_Config as TG
-from models.ResNet import Config as MG
+from models.VisionModels import Config as MG
 from psosgd_optimizer import Config as OG
 
 def main(args):
