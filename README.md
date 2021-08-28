@@ -3,6 +3,15 @@
 ## Introduction
 We try to combine the particle swarm optimization algorithm with the stochastic gradient descent algorithm in deep learning to train and optimize the model, namaly **PSOSGD**.
 
+## Dependence
+
+```
+pytorch
+torchvision
+matplotlib
+```
+Please see [requirements.txt](requirements.txt)
+
 ## Implementation Plan
 - [x] PSOSGD Training process
 - [x] PSOSGD Testing process
