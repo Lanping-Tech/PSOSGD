@@ -5,8 +5,9 @@ We try to combine the particle swarm optimization algorithm with the stochastic 
 
 ## Implementation Plan
 - [x] PSOSGD Training process
-- [ ] PSOSGD Testing process
-- [ ] Model saving and loading
+- [x] PSOSGD Testing process
+- [x] Model saving
+- [x] Plot performance indicators
 
 ## Contact us
 

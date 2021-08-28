@@ -21,6 +21,10 @@ def main(args):
     loss_fn = torch.nn.CrossEntropyLoss()
 
     trainer.train(train_loader, loss_fn, args.epochs)
+    test_loss, test_acc = trainer.train(train_loader, loss_fn, args.epochs)
+
+    print('All model loss on test dataset: '+test_loss)
+    print('All model ACC on test dataset: '+test_acc)
 
 
 if __name__ == '__main__':
