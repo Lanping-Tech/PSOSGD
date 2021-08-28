@@ -11,6 +11,8 @@ from psosgd_optimizer import PSOSGD
 
 import matplotlib.pyplot as plt
 
+from tqdm import tqdm
+
 class PSOSGD_Trainer_Config:
 
     """训练配置参数"""
@@ -56,11 +58,11 @@ class PSOSGD_Trainer:
 
         for t in range(epochs):
             # 切换训练状态
-
+            print('Epoch ' + t)
             for model in self.models:
                 model.train()
 
-            for batch, (X, y) in enumerate(data_loader):
+            for (X, y) in tqdm(data_loader):
                 X, y = X.double().to(self.config.device), y.to(self.config.device)
                 batch_losses = []
                 for model, optimizer in zip(self.models, self.optimizers):
@@ -88,6 +90,10 @@ class PSOSGD_Trainer:
             eval_losses.append(eval_loss)
             eval_accs.append(eval_acc)
             best_model_index = np.argmax(eval_accs)
+
+            print('Best Loss model: {} {}'.format(np.argmax(eval_loss), max(eval_loss)))
+            print('Best ACC model: {} {}'.format(np.argmax(eval_accs), max(eval_accs)))
+
             model_save_path = os.path.join(self.config.output_path, 'epoch-{}-model-{}.pth'.format(t, best_model_index))
             self.save_model(self.models[best_model_index], model_save_path)
 
