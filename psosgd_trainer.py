@@ -141,7 +141,7 @@ class PSOSGD_Trainer:
 
     def performance_display(self, metric_value, metric_name):
         color = ['b', 'g', 'r', 'c', 'm', 'y', 'k']
-        for model_index in self.config.n_particle:
+        for model_index in range(self.config.n_particle):
             color_index = model_index % len(color)
             plt.plot(list(range(1, len(metric_value[model_index])+1)), 
                      metric_value[model_index], 
