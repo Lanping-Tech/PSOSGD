@@ -80,8 +80,9 @@ class PSOSGD(Optimizer):
             weight_global_optmized_location = group['weight_global_optmized_location']
 
             for p_index, p in enumerate(group['params']):
-                local_best_p = local_best_param_group[p_index]
-                global_best_p = global_best_param_group[p_index]
+                if is_psosgd:
+                    local_best_p = local_best_param_group[p_index]
+                    global_best_p = global_best_param_group[p_index]
                 if p.grad is None:
                     continue
                 d_p = p.grad
