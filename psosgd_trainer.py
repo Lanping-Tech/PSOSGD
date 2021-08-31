@@ -74,15 +74,16 @@ class PSOSGD_Trainer:
                     
                     batch_losses.append(loss.item())
 
-                for i in range(self.config.n_particle):
-                    if local_best_param_groups[i][0] > batch_losses[i]:
-                        local_best_param_groups[i] = (batch_losses[i], [torch.clone(param).detach() for param in self.models[i].parameters()])
+                if self.config.n_particle != 1:
+                    for i in range(self.config.n_particle):
+                        if local_best_param_groups[i][0] > batch_losses[i]:
+                            local_best_param_groups[i] = (batch_losses[i], [torch.clone(param).detach() for param in self.models[i].parameters()])
 
-                    if global_best_param_group[0] > batch_losses[i]:
-                        global_best_param_group = (batch_losses[i], [torch.clone(param).detach() for param in self.models[i].parameters()])
+                        if global_best_param_group[0] > batch_losses[i]:
+                            global_best_param_group = (batch_losses[i], [torch.clone(param).detach() for param in self.models[i].parameters()])
 
                 for i in range(self.config.n_particle):
-                    self.optimizers[i].step(local_best_param_groups[i][1], global_best_param_group[1])
+                    self.optimizers[i].step(local_best_param_groups[i][1], global_best_param_group[1], self.config.n_particle != 1)
 
                 losses.append(batch_losses)
 

@@ -54,7 +54,7 @@ class PSOSGD(Optimizer):
             group.setdefault('nesterov', False)
 
     @torch.no_grad()
-    def step(self, local_best_param_group, global_best_param_group, closure=None):
+    def step(self, local_best_param_group, global_best_param_group, is_psosgd, closure=None):
         """Performs a single optimization step.
 
         Arguments:
@@ -95,12 +95,14 @@ class PSOSGD(Optimizer):
                         buf = param_state['momentum_buffer']
                         # buf.mul_(momentum).add_(d_p, alpha=1 - dampening)
                         buf.mul_(momentum)
-                        buf.sub_(local_best_p.sub(p), alpha=weight_particle_optmized_location * random.random())
-                        buf.sub_(global_best_p.sub(p), alpha=weight_global_optmized_location * random.random())
+                        if is_psosgd:
+                            buf.sub_(local_best_p.sub(p), alpha=weight_particle_optmized_location * random.random())
+                            buf.sub_(global_best_p.sub(p), alpha=weight_global_optmized_location * random.random())
                         buf.add_(d_p, alpha=1-dampening)
 
-                        buf[buf > vlimit_max] = vlimit_max
-                        buf[buf < vlimit_min] = vlimit_min
+                        if is_psosgd:
+                            buf[buf > vlimit_max] = vlimit_max
+                            buf[buf < vlimit_min] = vlimit_min
      
                     if nesterov:
                         d_p = d_p.add(buf, alpha=momentum)
