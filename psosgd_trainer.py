@@ -58,7 +58,7 @@ class PSOSGD_Trainer:
 
         for t in range(epochs):
             # 切换训练状态
-            print('Epoch ' + t)
+            print('Epoch ' + str(t))
             for model in self.models:
                 model.train()
 
@@ -86,21 +86,22 @@ class PSOSGD_Trainer:
 
                 losses.append(batch_losses)
 
+            print('Eval ' + str(t))
+
             eval_loss, eval_acc = self.test(data_loader, loss_fn)
             eval_losses.append(eval_loss)
             eval_accs.append(eval_acc)
-            best_model_index = np.argmax(eval_accs)
+            best_model_index = np.argmax(eval_acc)
 
             print('Best Loss model: {} {}'.format(np.argmax(eval_loss), max(eval_loss)))
-            print('Best ACC model: {} {}'.format(np.argmax(eval_accs), max(eval_accs)))
+            print('Best ACC model: {} {}'.format(np.argmax(eval_acc), max(eval_acc)))
 
             model_save_path = os.path.join(self.config.output_path, 'epoch-{}-model-{}.pth'.format(t, best_model_index))
             self.save_model(self.models[best_model_index], model_save_path)
 
-
-        self.performance_display(losses, 'Train_Loss')
-        self.performance_display(eval_losses, 'Eval_Loss')
-        self.performance_display(eval_accs, 'Eval_ACC')
+        self.performance_display(np.array(losses).T, 'Train_Loss')
+        self.performance_display(np.array(eval_losses).T, 'Eval_Loss')
+        self.performance_display(np.array(eval_accs).T, 'Eval_ACC')
 
         return losses, eval_losses, eval_accs
 
@@ -120,8 +121,8 @@ class PSOSGD_Trainer:
                 test_acc = 0
                 total = 0
                 batch_num = 0
-                for _, (data, target) in enumerate(data_loader):
-                    data, target = data.to(self.config.device), target.to(self.config.device)
+                for (data, target) in tqdm(data_loader):
+                    data, target = data.double().to(self.config.device), target.to(self.config.device)
                     output = model(data)
                     loss = loss_fn(output, target)
                     test_loss += loss.item()
@@ -155,6 +156,7 @@ class PSOSGD_Trainer:
         plt.grid(linestyle='--')
         fig_path = os.path.join(self.config.output_path,metric_name+'.png')
         plt.savefig(fig_path, dpi=500, bbox_inches = 'tight')
+        plt.cla()
 
 
 
