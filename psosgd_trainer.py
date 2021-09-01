@@ -6,6 +6,7 @@ import importlib
 import numpy as np
 
 import torch
+import torch.backends.cudnn as cudnn
 
 from psosgd_optimizer import PSOSGD
 
@@ -29,7 +30,11 @@ class PSOSGD_Trainer_Config:
         # 优化器参数
         self.optimizer_config = optimizer_config
 
-        self.device = device
+        if device ==  "cuda":
+            self.device = torch.device('cuda')
+            cudnn.benchmark = True
+        else:
+            self.device = torch.device('cpu')
 
         self.n_particle = n_particle
 
