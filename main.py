@@ -54,6 +54,7 @@ if __name__ == '__main__':
     parser.add_argument('--xlimit_min', default=-10, type=float, help='xlimit_min')
     parser.add_argument('--weight_particle_optmized_location', default=0.33, type=float, help='weight_particle_optmized_location')
     parser.add_argument('--weight_global_optmized_location', default=0.33, type=float, help='weight_global_optmized_location')
+    parser.add_argument('--use_sgd', default=True, type=bool, help='use_sgd')
 
     # trainer
     parser.add_argument('--divice', default="cuda" if torch.cuda.is_available() else "cpu", type=str, help='divice')

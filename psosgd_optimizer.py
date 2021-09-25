@@ -54,7 +54,7 @@ class PSOSGD(Optimizer):
             group.setdefault('nesterov', False)
 
     @torch.no_grad()
-    def step(self, local_best_param_group, global_best_param_group, is_psosgd, closure=None):
+    def step(self, local_best_param_group, global_best_param_group, use_pso, use_sgd, closure=None):
         """Performs a single optimization step.
 
         Arguments:
@@ -80,37 +80,48 @@ class PSOSGD(Optimizer):
             weight_global_optmized_location = group['weight_global_optmized_location']
 
             for p_index, p in enumerate(group['params']):
-                if is_psosgd:
+                if use_pso:
                     local_best_p = local_best_param_group[p_index]
                     global_best_p = global_best_param_group[p_index]
+
                 if p.grad is None:
                     continue
-                d_p = p.grad
-                if weight_decay != 0:
-                    d_p = d_p.add(p, alpha=weight_decay)
+
+                if use_sgd:
+                    d_p = p.grad
+                    if weight_decay != 0:
+                        d_p = d_p.add(p, alpha=weight_decay)
+                else:
+                    d_p = -(vlimit_min + (vlimit_max - vlimit_min) * torch.rand(p.shape))
+
                 if momentum != 0:
                     param_state = self.state[p]
                     if 'momentum_buffer' not in param_state:
                         buf = param_state['momentum_buffer'] = torch.clone(d_p).detach()
                     else:
                         buf = param_state['momentum_buffer']
-                        # buf.mul_(momentum).add_(d_p, alpha=1 - dampening)
+
                         buf.mul_(momentum)
-                        if is_psosgd:
+                        if use_pso:
                             buf.sub_(local_best_p.sub(p), alpha=weight_particle_optmized_location * random.random())
                             buf.sub_(global_best_p.sub(p), alpha=weight_global_optmized_location * random.random())
-                        buf.add_(d_p, alpha=1-dampening)
 
-                        if is_psosgd:
+                        if use_sgd:
+                            buf.add_(d_p, alpha=1-dampening)
+
+                        if use_pso:
                             buf[buf > vlimit_max] = vlimit_max
                             buf[buf < vlimit_min] = vlimit_min
      
-                    if nesterov:
+                    if use_sgd and nesterov:
                         d_p = d_p.add(buf, alpha=momentum)
                     else:
                         d_p = buf
 
-                p.add_(d_p, alpha=-lr)
+                if use_sgd:
+                    p.add_(d_p, alpha=-lr)
+                else: # When SGD is not used, the learning rate parameter lr is invalid.
+                    p.add_(d_p, alpha=-1)
                 # p[p>xlimit_max] = xlimit_max
                 # p[p<xlimit_min] = xlimit_min
 

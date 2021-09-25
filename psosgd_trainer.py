@@ -22,7 +22,8 @@ class PSOSGD_Trainer_Config:
                  optimizer_config,
                  device = "cuda" if torch.cuda.is_available() else "cpu",
                  n_particle = 5,
-                 output_path = 'output', **kwargs):
+                 output_path = 'output', 
+                 use_sgd = True, **kwargs):
 
         # 预留模型参数
         self.model_config = model_config
@@ -39,6 +40,8 @@ class PSOSGD_Trainer_Config:
         self.n_particle = n_particle
 
         self.output_path = output_path
+
+        self.use_sgd = use_sgd
 
 
 class PSOSGD_Trainer:
@@ -88,7 +91,7 @@ class PSOSGD_Trainer:
                             global_best_param_group = (batch_losses[i], [torch.clone(param).detach() for param in self.models[i].parameters()])
 
                 for i in range(self.config.n_particle):
-                    self.optimizers[i].step(local_best_param_groups[i][1], global_best_param_group[1], self.config.n_particle != 1)
+                    self.optimizers[i].step(local_best_param_groups[i][1], global_best_param_group[1], self.config.n_particle != 1, self.config.use_sgd)
 
                 losses.append(batch_losses)
 
