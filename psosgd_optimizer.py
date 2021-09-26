@@ -92,6 +92,7 @@ class PSOSGD(Optimizer):
                     if weight_decay != 0:
                         d_p = d_p.add(p, alpha=weight_decay)
                 else:
+                    d_p = d_p.to(p.device)
                     d_p = -(vlimit_min + (vlimit_max - vlimit_min) * torch.rand(p.shape))
 
                 if momentum != 0:
@@ -121,7 +122,6 @@ class PSOSGD(Optimizer):
                 if use_sgd:
                     p.add_(d_p, alpha=-lr)
                 else: # When SGD is not used, the learning rate parameter lr is invalid.
-                    d_p = d_p.to(p.device)
                     p.add_(d_p, alpha=-1)
                 # p[p>xlimit_max] = xlimit_max
                 # p[p<xlimit_min] = xlimit_min
