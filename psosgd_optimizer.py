@@ -121,6 +121,7 @@ class PSOSGD(Optimizer):
                 if use_sgd:
                     p.add_(d_p, alpha=-lr)
                 else: # When SGD is not used, the learning rate parameter lr is invalid.
+                    d_p = d_p.to(p.device)
                     p.add_(d_p, alpha=-1)
                 # p[p>xlimit_max] = xlimit_max
                 # p[p<xlimit_min] = xlimit_min
